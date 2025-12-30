@@ -1,270 +1,187 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Aethel Axis — Knowledge Base</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Aethel Axis – Maritime Assistant</title>
 
-  <!-- iOS / PWA nice defaults -->
-  <meta name="theme-color" content="#0B1220" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="theme-color" content="#0B1220" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css" />
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Inter,system-ui,sans-serif;background:#000;color:#fff}
+/* background */
+.bg{position:fixed;inset:0;z-index:-1;background:url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e")center/cover no-repeat}
+.bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,18,32,.8),rgba(10,18,32,.95))}
+/* app container */
+.app{height:100%;display:flex;flex-direction:column}
+/* screens */
+.screen{flex:1;display:none;padding:24px}
+.screen.active{display:block}
+.center{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+/* branding */
+.logo{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#3b82f6,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:600;margin-bottom:20px}
+.title{font-size:26px;font-weight:600}.tagline{opacity:.7;margin:8px 0 32px}.desc{opacity:.75;line-height:1.5}
+/* buttons */
+button{border:none;border-radius:999px;padding:14px 28px;font-size:15px;cursor:pointer}
+.primary{background:#fff;color:#0b1220}
+/* chat */
+.chat{display:flex;flex-direction:column;height:100%}.chat-log{flex:1;overflow:auto;margin-bottom:12px}.msg{padding:12px 16px;border-radius:16px;margin-bottom:10px;max-width:85%}.msg.user{background:#2563eb;align-self:flex-end}.msg.bot{background:rgba(255,255,255,.1)}.chat-input{display:flex;gap:8px}.chat-input input{flex:1;border-radius:999px;border:none;padding:12px 16px}
+/* navigation bar */
+.nav{height:72px;display:none;backdrop-filter:blur(16px);background:rgba(10,18,32,.85);border-top:1px solid rgba(255,255,255,.08)}
+.nav button{flex:1;background:none;color:#fff;opacity:.6;font-size:12px}.nav button.active{opacity:1}.nav span{display:block;font-size:22px;margin-bottom:4px}
+</style>
 </head>
 
 <body>
-  <!-- Background -->
-  <div class="bg">
-    <!-- Put your ship photo here: /assets/ship.jpg -->
-    <div class="bg__image"></div>
-    <div class="bg__overlay"></div>
-  </div>
+<div class="bg"></div>
 
-  <!-- App shell -->
-  <main class="app">
-    <!-- Top status / header -->
-    <header class="topbar">
-      <div class="topbar__left">
-        <div class="brand">
-          <div class="brand__mark">AX</div>
-          <div class="brand__text">
-            <div class="brand__name">Aethel Axis</div>
-            <div class="brand__tag">First, We Listen.</div>
-          </div>
-        </div>
+<div class="app">
+  <!-- login screen -->
+  <section class="screen active" id="login">
+    <div class="center">
+      <div class="logo">AX</div>
+      <div class="title">Aethel Axis</div>
+      <div class="tagline">First, We Listen.</div>
+      <div class="desc">Интеллектуальный помощник для моряков. Войдите, чтобы продолжить.</div>
+      <button class="primary" id="loginBtn">Продолжить через Telegram</button>
+    </div>
+  </section>
+
+  <!-- home -->
+  <section class="screen" id="home">
+    <div class="center">
+      <div class="title" id="hello">Hello.</div>
+      <div class="desc">
+        Добро пожаловать в Aethel Axis — спокойного и умного помощника для моряков. Проект предназначен для того, чтобы отвечать на ваши вопросы, помогать с процедурами и давать доступ к судовым мануалам.
       </div>
-      <div class="topbar__right">
-        <div class="pill auth-hint">…</div>
+    </div>
+  </section>
+
+  <!-- voice -->
+  <section class="screen" id="voice">
+    <div class="center">
+      <div class="title">Voice</div>
+      <div class="desc">Здесь будет реализация голосового ввода и озвучивания ответов. Для работы потребуется поддержка TTS / STT на backend.</div>
+    </div>
+  </section>
+
+  <!-- chat -->
+  <section class="screen" id="chat">
+    <div class="chat">
+      <div class="chat-log" id="chatLog"></div>
+      <div class="chat-input">
+        <input id="chatInput" placeholder="Введите запрос…" />
+        <button class="primary" id="sendBtn">➤</button>
       </div>
-    </header>
+    </div>
+  </section>
 
-    <!-- Pages -->
-    <section class="pages">
+  <!-- manuals -->
+  <section class="screen" id="manuals">
+    <div class="center">
+      <div class="title">Manuals</div>
+      <div class="desc">
+        Загрузка и просмотр судовых документов. Здесь вы сможете добавить PDF, DOCX и другие файлы, которые будут анализироваться ассистентом.<br><br>
+        (Функционал загрузки файлов должен быть реализован отдельно и подключён к соответствующим эндпоинтам на сервере.)
+      </div>
+    </div>
+  </section>
 
-      <!-- HOME -->
-      <section class="page page--active" data-page="home">
-        <div class="hero">
-          <div class="hero__greet">Hello, John.</div>
-          <div class="hero__sub">Connect shortly.</div>
-        </div>
+  <!-- bottom navigation -->
+  <nav class="nav" id="nav">
+    <button data-go="home" class="active"><span>⌂</span>Home</button>
+    <button data-go="voice"><span>🎙️</span>Voice</button>
+    <button data-go="chat"><span>💬</span>Chat</button>
+    <button data-go="manuals"><span>📘</span>Manuals</button>
+  </nav>
+</div>
 
-        <div class="card focus">
-          <div class="focus__label">Today’s Focus:</div>
-          <div class="focus__title">Engine Room Inspection</div>
-          <div class="focus__actions">
-            <button class="btn btn--primary" data-go="chat">Start Checklists</button>
-            <button class="btn btn--ghost" data-go="manuals">Open Manuals</button>
-          </div>
-        </div>
+<script>
+// адрес вашего backend (замените на нужный домен/порт)
+const BACKEND = "https://acai-backend.onrender.com";
 
-        <div class="section-title">Knowledge Base</div>
+const screens = document.querySelectorAll(".screen");
+const nav = document.getElementById("nav");
+let conversationId = null;
 
-        <div class="list">
-          <div class="list__item">
-            <div class="file file--pdf">PDF</div>
-            <div class="list__meta">
-              <div class="list__title">MAN B&amp;W Operation Manual.pdf</div>
-              <div class="list__sub">2.2 MB • PDF</div>
-            </div>
-            <div class="chev">›</div>
-          </div>
+/* Навигация */
+function show(pageId) {
+  screens.forEach(s => s.classList.remove("active"));
+  document.getElementById(pageId).classList.add("active");
+  document.querySelectorAll(".nav button").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.go === pageId);
+  });
+}
 
-          <div class="list__item">
-            <div class="file file--doc">DOC</div>
-            <div class="list__meta">
-              <div class="list__title">Safety Procedures.docx</div>
-              <div class="list__sub">271 KB • DOCX</div>
-            </div>
-            <div class="chev">›</div>
-          </div>
+/* Переключение по нижним кнопкам */
+document.querySelectorAll(".nav button").forEach(btn => {
+  btn.onclick = () => show(btn.dataset.go);
+});
 
-          <div class="list__item">
-            <div class="file file--pdf">PDF</div>
-            <div class="list__meta">
-              <div class="list__title">Electrical Maintenance.pdf</div>
-              <div class="list__sub">1.4 MB • PDF</div>
-            </div>
-            <div class="chev">›</div>
-          </div>
-        </div>
-      </section>
+/* Аутентификация */
+document.getElementById("loginBtn").onclick = () => {
+  // перенаправляем на /login backend-а для авторизации через Telegram
+  window.location.href = BACKEND + "/login";
+};
 
-      <!-- VOICE -->
-      <section class="page" data-page="voice">
-        <div class="hero hero--compact">
-          <div class="hero__greet">Good evening, John.</div>
-          <div class="hero__sub">How can I assist you?</div>
-        </div>
+/* Проверка авторизации */
+async function checkAuth() {
+  try {
+    const r = await fetch(BACKEND + "/me/export", { credentials: "include" });
+    const data = await r.json();
+    if (data.ok && data.data) {
+      const name = data.data.first_name || data.data.username || "Sailor";
+      document.getElementById("hello").textContent = `Hello, ${name}.`;
+      nav.style.display = "flex";
+      show("home");
+      return;
+    }
+  } catch (_) {}
+  // если не авторизован – остаёмся на странице login
+  show("login");
+}
+checkAuth();
 
-        <div class="card voice">
-          <div class="voice__wave">
-            <div class="wave"></div>
-          </div>
+/* Получаем или создаём чат-конверсацию */
+async function ensureConversation() {
+  if (conversationId) return;
+  const res = await fetch(BACKEND + "/api/conversations", { credentials: "include" });
+  const json = await res.json();
+  if (json.items && json.items.length > 0) {
+    conversationId = json.items[0].id;
+  } else {
+    const res2 = await fetch(BACKEND + "/api/conversations", { method: "POST", credentials: "include" });
+    const json2 = await res2.json();
+    conversationId = json2.id;
+  }
+}
 
-          <div class="voice__controls">
-            <button class="btn btn--ghost">Cancel</button>
-            <button class="btn btn--primary">Done</button>
-          </div>
-
-          <div class="mic">
-            <div class="mic__ring"></div>
-            <div class="mic__btn">🎙️</div>
-          </div>
-
-          <div class="voice__hint">
-            (Voice UI skeleton — next we’ll connect to Telegram voice / STT if you want.)
-          </div>
-        </div>
-
-        <div class="card kb-mini">
-          <div class="kb-mini__title">Knowledge Base</div>
-          <div class="kb-mini__chips">
-            <span class="chip"><span class="dot dot--pdf"></span> MAN B&amp;W Operation Manual</span>
-            <span class="chip"><span class="dot dot--doc"></span> Safety Procedures</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- CHAT -->
-      <section class="page" data-page="chat">
-        <div class="chat-top">
-          <div class="chat-top__title">AX Assistant</div>
-          <div class="chat-top__sub">Ask procedures • troubleshooting • docs</div>
-        </div>
-
-        <div class="chat">
-          <div class="chat__thread">
-            <div style="display:flex; justify-content:flex-end;">
-              <div class="card chat__bubble chat__bubble--user">
-                Hey, what's the procedure to cold start main engine?
-              </div>
-            </div>
-
-            <div style="display:flex; justify-content:flex-start;">
-              <div class="card chat__bubble">
-                To cold start the main engine, follow these steps:
-                <br><br>
-                1. Ensure the pre-lubricating oil pump is running.<br>
-                2. Open the fuel oil valve to the engine.<br>
-                3. Engage turning gear and check free rotation.<br>
-                4. Disengage turning gear.<br>
-                5. Engage starting air and start injection.<br><br>
-                (Demo text — your backend will answer here.)
-              </div>
-            </div>
-          </div>
-
-          <div class="chat__composer">
-            <input class="chat__input" placeholder="Reply…" autocomplete="off" />
-            <button class="chat__send" title="Send">➤</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- MANUALS -->
-      <section class="page" data-page="manuals">
-        <div class="card manuals-head">
-          <div class="manuals-head__title">Manuals</div>
-          <div class="manuals-head__search">
-            <input placeholder="Search manuals…" />
-          </div>
-          <div class="manuals-head__actions">
-            <button class="btn btn--primary">+ Upload File</button>
-          </div>
-        </div>
-
-        <div class="list">
-          <div class="list__item">
-            <div class="file file--pdf">PDF</div>
-            <div class="list__meta">
-              <div class="list__title">MAN B&amp;W Operation Manual.pdf</div>
-              <div class="list__sub">8.2 MB • PDF</div>
-            </div>
-            <div class="kebab">⋯</div>
-          </div>
-
-          <div class="list__item">
-            <div class="file file--doc">DOC</div>
-            <div class="list__meta">
-              <div class="list__title">Safety Procedures.docx</div>
-              <div class="list__sub">271 KB • DOCX</div>
-            </div>
-            <div class="kebab">⋯</div>
-          </div>
-
-          <div class="list__item">
-            <div class="file file--pdf">PDF</div>
-            <div class="list__meta">
-              <div class="list__title">Electrical Maintenance.pdf</div>
-              <div class="list__sub">1.4 MB • PDF</div>
-            </div>
-            <div class="kebab">⋯</div>
-          </div>
-        </div>
-
-        <div class="card stats">
-          <div class="stats__title">Knowledge Base Stats</div>
-          <div class="stats__grid">
-            <div class="stat">
-              <div class="stat__label">Total Docs</div>
-              <div class="stat__value">13</div>
-            </div>
-            <div class="stat">
-              <div class="stat__label">Pages indexed today</div>
-              <div class="stat__value">67</div>
-            </div>
-            <div class="stat">
-              <div class="stat__label">Last update</div>
-              <div class="stat__value">16:27</div>
-            </div>
-            <div class="stat">
-              <div class="stat__label">Latency</div>
-              <div class="stat__value">15.27</div>
-            </div>
-          </div>
-        </div>
-
-      </section>
-
-    </section>
-
-    <!-- Bottom nav -->
-    <nav class="nav">
-      <button class="nav__item nav__item--active" data-go="home">
-        <span class="nav__icon">⌂</span>
-        <span class="nav__label">Home</span>
-      </button>
-      <button class="nav__item" data-go="voice">
-        <span class="nav__icon">🎙️</span>
-        <span class="nav__label">Voice</span>
-      </button>
-      <button class="nav__item" data-go="chat">
-        <span class="nav__icon">💬</span>
-        <span class="nav__label">Chat</span>
-      </button>
-      <button class="nav__item" data-go="manuals">
-        <span class="nav__icon">📘</span>
-        <span class="nav__label">Manuals</span>
-      </button>
-    </nav>
-  </main>
-
-  <script src="app.js"></script>
-
-  <!-- little helper: make Home buttons switch pages -->
-  <script>
-    document.addEventListener("click", (e) => {
-      const b = e.target.closest("[data-go]");
-      if (!b) return;
-      const go = b.getAttribute("data-go");
-      const navBtn = document.querySelector(`.nav__item[data-go="${go}"]`);
-      if (navBtn) navBtn.click();
-    });
-  </script>
+/* Отправка сообщения в чат */
+document.getElementById("sendBtn").onclick = async () => {
+  const input = document.getElementById("chatInput");
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = "";
+  const log = document.getElementById("chatLog");
+  log.innerHTML += `<div class="msg user">${text}</div>`;
+  log.scrollTop = log.scrollHeight;
+  await ensureConversation();
+  // отправляем запрос на backend
+  const res = await fetch(`${BACKEND}/api/chat/${conversationId}`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: text })
+  });
+  const json = await res.json();
+  if (json.reply) {
+    log.innerHTML += `<div class="msg bot">${json.reply}</div>`;
+    log.scrollTop = log.scrollHeight;
+  }
+};
+</script>
 </body>
 </html>

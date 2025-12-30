@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Aethel Axis — First, We Listen</title>
+
+  <!-- App icons / manifest (we’ll add files later) -->
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/assets/icon-192.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-192.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+
+<body>
+  <!-- Background layers -->
+  <div class="bg">
+    <div class="bg__image" aria-hidden="true"></div>
+    <div class="bg__vignette" aria-hidden="true"></div>
+    <div class="bg__grain" aria-hidden="true"></div>
+  </div>
+
+  <!-- App -->
+  <div class="app" id="app">
+    <header class="topbar">
+      <div class="topbar__left">
+        <div class="brand">
+          <div class="brand__mark" aria-hidden="true"></div>
+          <div class="brand__text">
+            <div class="brand__name">Aethel Axis</div>
+            <div class="brand__tag">First, We Listen</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="topbar__right">
+        <button class="icon-btn" id="btnBell" title="Notifications" aria-label="Notifications">
+          <span class="icon">🔔</span>
+        </button>
+        <button class="icon-btn" id="btnAccount" title="Account" aria-label="Account">
+          <span class="avatar" aria-hidden="true">A</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Pages -->
+    <main class="pages">
+      <!-- HOME -->
+      <section class="page page--active" id="page-home" data-page="home">
+        <div class="hero">
+          <h1 class="hero__hello">Hello, <span id="helloName">Captain</span>.</h1>
+          <p class="hero__sub">Connect shortly.</p>
+
+          <div class="card card--glass focus-card">
+            <div class="focus-card__row">
+              <div class="chip">Today’s Focus</div>
+              <button class="mini-btn" id="btnFocusInfo" title="Focus details">i</button>
+            </div>
+            <div class="focus-card__title" id="focusTitle">Engine Room Inspection</div>
+          </div>
+
+          <div class="stack">
+            <button class="action action--primary" id="btnStartChecklist">
+              <span class="action__left">
+                <span class="action__icon">✅</span>
+                <span class="action__text">Start Checklists</span>
+              </span>
+              <span class="action__right">›</span>
+            </button>
+
+            <button class="action action--secondary" id="btnOpenManuals">
+              <span class="action__left">
+                <span class="action__icon">📘</span>
+                <span class="action__text">Open Manuals</span>
+              </span>
+              <span class="action__right">›</span>
+            </button>
+          </div>
+
+          <div class="section-title">
+            <span>Knowledge Base</span>
+          </div>
+
+          <div class="list list--glass" id="kbList">
+            <!-- populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- LOG (Voice) -->
+      <section class="page" id="page-log" data-page="log">
+        <div class="panel">
+          <div class="panel__title">Good evening, <span id="logName">Captain</span>.</div>
+          <div class="panel__subtitle">How can I assist you?</div>
+
+          <div class="voice-card">
+            <div class="wave" aria-hidden="true">
+              <div class="wave__bar"></div><div class="wave__bar"></div><div class="wave__bar"></div>
+              <div class="wave__bar"></div><div class="wave__bar"></div><div class="wave__bar"></div>
+              <div class="wave__bar"></div><div class="wave__bar"></div><div class="wave__bar"></div>
+              <div class="wave__bar"></div><div class="wave__bar"></div><div class="wave__bar"></div>
+            </div>
+
+            <div class="voice-actions">
+              <button class="ghost-btn" id="btnCancelVoice">Cancel</button>
+              <button class="ghost-btn ghost-btn--good" id="btnDoneVoice">Done</button>
+            </div>
+
+            <button class="mic" id="btnMic" aria-label="Hold to talk">
+              <span class="mic__dot" aria-hidden="true"></span>
+              <span class="mic__icon" aria-hidden="true">🎙️</span>
+            </button>
+
+            <div class="voice-hint" id="voiceHint">Hold to talk • Release to send</div>
+          </div>
+
+          <div class="section-title"><span>Knowledge Base</span></div>
+          <div class="list list--glass" id="kbList2"></div>
+        </div>
+      </section>
+
+      <!-- MANUALS -->
+      <section class="page" id="page-manuals" data-page="manuals">
+        <div class="panel">
+          <div class="panel__title">Manuals</div>
+
+          <div class="search">
+            <span class="search__icon">🔎</span>
+            <input id="searchManuals" type="search" placeholder="Search manuals..." autocomplete="off" />
+          </div>
+
+          <button class="upload" id="btnUpload">
+            <span class="upload__icon">＋</span>
+            <span class="upload__text">Upload File</span>
+          </button>
+
+          <div class="list list--glass" id="manualsList"></div>
+
+          <div class="stats card card--glass">
+            <div class="stats__title">Knowledge Base Stats</div>
+            <div class="stats__row">
+              <span>Total Docs</span>
+              <strong id="statDocs">13</strong>
+            </div>
+            <div class="stats__row">
+              <span>Pages indexed today</span>
+              <strong id="statPages">67</strong>
+            </div>
+            <div class="stats__row">
+              <span>Last update</span>
+              <strong id="statTime">16:27</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHAT -->
+      <section class="page" id="page-chat" data-page="chat">
+        <div class="panel chat">
+          <div class="chat__top">
+            <button class="icon-btn" id="btnBackHome" aria-label="Back">←</button>
+            <div class="chat__title">Aethel Axis</div>
+            <button class="icon-btn" id="btnMore" aria-label="More">⋯</button>
+          </div>
+
+          <div class="chat__thread" id="chatThread">
+            <!-- bubbles -->
+          </div>
+
+          <div class="chat__composer">
+            <button class="icon-btn" id="btnAttach" aria-label="Attach">📎</button>
+            <input class="chat__input" id="chatInput" placeholder="Reply..." />
+            <button class="icon-btn" id="btnSend" aria-label="Send">➤</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom nav -->
+    <nav class="nav">
+      <button class="nav__item nav__item--active" data-nav="home" aria-label="Home">
+        <span class="nav__icon">⌂</span><span class="nav__label">Home</span>
+      </button>
+      <button class="nav__item" data-nav="log" aria-label="Log">
+        <span class="nav__icon">◉</span><span class="nav__label">Log</span>
+      </button>
+      <button class="nav__item" data-nav="manuals" aria-label="Manuals">
+        <span class="nav__icon">▦</span><span class="nav__label">Manuals</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
